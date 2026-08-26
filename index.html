@@ -199,7 +199,6 @@ footer.site-footer{padding:60px 40px 40px; text-align:center; border-top:1px sol
   display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; cursor:pointer;
 }
 .video-frame.portrait{width:100%; max-width:340px; aspect-ratio:9/16; margin:0 auto;}
-.video-frame::before{content:''; position:absolute; inset:0; background:repeating-linear-gradient(115deg, rgba(255,255,255,0.04) 0 2px, transparent 2px 26px);}
 .video-frame .play{width:64px; height:64px; border-radius:50%; border:1px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; z-index:1;}
 .video-frame .play::after{content:''; border-style:solid; border-width:9px 0 9px 15px; border-color:transparent transparent transparent #fff; margin-left:4px;}
 .video-frame .vcap{position:absolute; bottom:20px; left:22px; right:22px; color:rgba(255,255,255,0.75); font-size:11px; letter-spacing:0.12em; text-transform:uppercase; z-index:1;}
@@ -1189,7 +1188,6 @@ function renderVideosStandard(c) {
     '<section class="video-section"><div class="wrap">' +
       '<div class="section-title"><span class="eyebrow">Runway Film</span><hr class="stitch"></div>' +
       '<div class="video-wrap">' + frames + '</div>' +
-      '<p class="placeholder-note" style="margin-top:16px;">影片預留區：請將此區塊換成 &lt;video src="..."&gt; 或 YouTube / Vimeo 的 &lt;iframe&gt; 嵌入語法。</p>' +
     '</div></section>';
 }
 function renderVideoFeature(c) {
@@ -1202,7 +1200,6 @@ function renderVideoFeature(c) {
         '<div class="video-frame portrait">' + videoEmbedHtml(v) + '</div>' +
         '<div class="video-feature-copy"><h3 class="italic">' + (c.videoIntroTitle || '') + '</h3><p>' + (c.videoIntroText || '') + '</p></div>' +
       '</div>' +
-      '<p class="placeholder-note" style="margin-top:16px;">影片預留區：直式影片可直接替換為 &lt;video src="..."&gt; 或崁入 iframe。</p>' +
     '</div></section>';
 }
 
