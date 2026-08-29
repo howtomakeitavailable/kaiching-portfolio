@@ -270,6 +270,10 @@ footer.site-footer{padding:60px 40px 40px; text-align:center; border-top:1px sol
 .lb-cta{display:inline-flex; align-items:center; gap:8px; font-size:12px; letter-spacing:.14em; text-transform:uppercase; border:1px solid var(--ink); padding:12px 20px;}
 .lb-cta:hover{background:var(--ink); color:var(--paper);}
 .lb-close{position:absolute; top:18px; right:18px; width:34px; height:34px; border-radius:50%; background:var(--paper); border:1px solid var(--line); display:flex; align-items:center; justify-content:center; z-index:5;}
+.lb-panel-lineup{background:var(--paper); max-width:960px; width:100%; max-height:88vh; overflow:auto; display:flex; flex-direction:column; box-shadow:0 30px 70px rgba(0,0,0,0.35); position:relative;}
+.lb-lineup-visual{background:var(--cream); padding:24px; display:flex; align-items:center; justify-content:center; border-bottom:1px solid var(--line);}
+.lb-lineup-visual img{width:100%; height:auto; display:block; max-height:60vh; object-fit:contain;}
+.lb-panel-lineup .lb-info{padding:30px 36px;}
 .brand-asset{cursor:pointer; transition:opacity .2s ease;}
 .brand-asset:hover{opacity:0.82;}
 .lb-panel-imageonly{display:flex; align-items:center; justify-content:center; max-width:88vw; max-height:88vh; background:var(--paper); padding:40px; position:relative;}
@@ -869,6 +873,7 @@ var COLLECTIONS = {
     key: 'show', title: '寂夜喚夢', titleEn: '<h2>Whisper of Dreamland in Silent Night</h2>', tagline: 'Five-Look Runway',
     lede: '在靜謐的夜裡，倚在窗邊，望向滿天星光，幻想著展開一場冒險。',
     palette: ['#cd9cbe', '#a8d0bf', '#BFD683', '#4269A1'],
+    lineupPhoto: 'photos/show-lineup.png',
     videos: [{ caption: '主題前導短片 — Opening Film', orientation: 'portrait', src: 'photos/show-video.mp4' }],
     videoLayout: 'feature',
     videoIntroTitle: '設計亮點',
@@ -878,9 +883,10 @@ var COLLECTIONS = {
   },
   grad: {
     key: 'grad', title: '微．日常', titleEn: '<h2>Tiny ‧ Diary</h2>', tagline: 'Six-Look Capstone',
-    lede: '以拼布敘日，紀錄一整天的行程。拼布、日記、互動是該系列的三大主題。',
+    lede: '以拼布敘日，紀錄一整天的行程。拼布、插畫、互動是該系列的三大核心。',
     palette: ['#E7C9A9', '#C58B78', '#B08A4E', '#F3ECDD'],
-    videos: [{ caption: "走秀正式影片 — Graduation Runway", orientation: 'landscape', youtube: '4hGnaiDQJwE' }],
+    lineupPhoto: 'photos/grad-lineup.png',
+    videos: [{ caption: "走秀正式影片 — Graduation Runway", orientation: 'landscape', gdrive: '1qfVeZB9uekYaV_h5-3xP99EC75A3BzGe' }],
     lineup: true,
     lineupPhoto: 'photos/grad-lineup.png',
     albumCaption: '寫真 · 畢業製作',
@@ -905,7 +911,7 @@ var COLLECTIONS = {
 var COLLECTION_KEYS = ['ind', 'brand', 'show', 'grad', 'collab'];
 
 /* 首頁精選：原民服飾/時裝展演/畢業製作各一，個人品牌/產學合作各兩套，共 7 套 */
-var HOME_HIGHLIGHTS = ['ind1', 'brand1', 'brand2', 'show4', 'grad2', 'collab1', 'collab2'];
+var HOME_HIGHLIGHTS = ['ind1', 'brand1', 'brand2', 'lineup:show', 'lineup:grad', 'collab1', 'collab2'];
 
 /* ---------------- 平面設計 Graphic Design ---------------- */
 var GRAPHIC_PROJECTS = [
@@ -927,7 +933,9 @@ var ABOUT = {
   portrait: 'photos/portrait.png',
   title: '實踐服設 · 應屆畢業生',
   statement: [
-    '我是剛從實踐大學服裝設計學系畢業的應屆畢業生，喜歡將畫面轉化為實體，追求設計帶給人的觸覺體驗與互動的溫度。作品橫跨服裝設計、平面設計與品牌識別，希望未來能共同參與品牌開發及產品設計。',
+    '我是剛從實踐大學服裝設計學系畢業的應屆畢業生，具有美術與廣告設計背景，擅長繪畫、視覺呈現，以及將設計概念轉化為實體時的細節掌握。',
+    '對我而言，設計最有趣的過程，是將腦中的畫面一步步轉化為可以被穿著、使用的物件。我重視設計圖與成品之間的還原程度，也喜歡透過材質、色彩、印花與製作方式反覆嘗試，解決從概念到實體之間的落差。',
+    '熟悉 Illustrator、Photoshop、InDesign 與 Procreate，具備服裝設計、印花設計、立體裁剪與縫製能力。除了服裝之外，也對包款、鞋款與配飾等產品設計抱有興趣，希望讓自己的設計真正進入人們的日常生活。d',
     '這份作品集收錄了原民服飾、個人品牌、時裝展演、畢業製作與產學合作等系列，紀錄了我從發想、打版、製作到最終呈現的完整歷程。'
   ],
   facts: [
@@ -969,13 +977,23 @@ function chapterNav(currentKey) {
 
 /* ---------------- 首頁 Home ---------------- */
 function renderHome() {
-  var orbitItems = HOME_HIGHLIGHTS.map(function (id) {
-    var l = LOOKS.filter(function (x) { return x.id === id; })[0];
+var orbitItems = HOME_HIGHLIGHTS.map(function (id) {
+  if (id.indexOf('lineup:') === 0) {
+    var ckey = id.slice(7);
+    var c = COLLECTIONS[ckey];
+    var repLook = LOOKS.filter(function (x) { return x.collection === ckey; })[0];
+    var thumb = c.lineupPhoto ? imgTag(c.lineupPhoto, c.title) : drawLook(repLook);
     return '<div class="orbit-item">' +
-      '<button class="card" data-look="' + l.id + '" aria-label="' + l.name + '">' + drawLook(l) + '</button>' +
-      '<span class="num">' + PAGE_LABEL[l.collection] + '</span>' +
+      '<button class="card" data-lineup="' + ckey + '" aria-label="' + c.title + '">' + thumb + '</button>' +
+      '<span class="num">' + PAGE_LABEL[ckey] + '</span>' +
       '</div>';
-  }).join('');
+  }
+  var l = LOOKS.filter(function (x) { return x.id === id; })[0];
+  return '<div class="orbit-item">' +
+    '<button class="card" data-look="' + l.id + '" aria-label="' + l.name + '">' + drawLook(l) + '</button>' +
+    '<span class="num">' + PAGE_LABEL[l.collection] + '</span>' +
+    '</div>';
+}).join('');
 
   return '' +
     '<section class="hero">' +
@@ -1356,6 +1374,23 @@ function openImageOnlyLightbox(html) {
   if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
   document.getElementById('lightbox').classList.add('open');
 }
+function openLineupLightbox(key) {
+  var c = COLLECTIONS[key];
+  var looks = LOOKS.filter(function (l) { return l.collection === key; });
+  var visual = c.lineupPhoto ? imgTag(c.lineupPhoto, c.title) :
+    ('<div class="lineup-strip" style="border:none;">' + looks.map(function (l) { return '<div class="lineup-fig">' + drawLook(l) + '<span>Look ' + l.num + '</span></div>'; }).join('') + '</div>');
+  document.getElementById('lightbox').innerHTML =
+    '<div class="lb-panel-lineup">' +
+      '<div class="lb-lineup-visual">' + visual + '</div>' +
+      '<div class="lb-info"><span class="eyebrow">Lineup · ' + c.title + '</span><h3 class="italic">' + c.title + '</h3><p>' + c.lede + '</p><a href="#' + key + '" class="lb-cta" data-cta="1">前往 ' + c.title + ' 系列 →</a></div>' +
+      '<button class="lb-close" aria-label="close">' + closeIconSvg() + '</button>' +
+    '</div>';
+  var closeBtn = document.querySelector('.lb-close');
+  if (closeBtn) closeBtn.addEventListener('click', closeLightbox);
+  var cta = document.querySelector('.lb-cta');
+  if (cta) cta.addEventListener('click', function () { closeLightbox(); });
+  document.getElementById('lightbox').classList.add('open');
+}
 function openLightbox(kind, id, mode) {
   if (kind === 'album') { openAlbumLightbox(id); return; }
   if (kind === 'graphic') { openGraphicLightbox(id, mode); return; }
@@ -1521,7 +1556,12 @@ document.addEventListener('click', function (e) {
   }
 
   var orbitCard = e.target.closest ? e.target.closest('.orbit-item .card') : null;
-  if (orbitCard) { openLightbox('look', orbitCard.getAttribute('data-look')); return; }
+  if (orbitCard) {
+    var lineupKey = orbitCard.getAttribute('data-lineup');
+    if (lineupKey) { openLineupLightbox(lineupKey); return; }
+    openLightbox('look', orbitCard.getAttribute('data-look'));
+    return;
+  }
 
   var spThumb = e.target.closest ? e.target.closest('.sp-thumb') : null;
   if (spThumb) {
