@@ -199,6 +199,9 @@ footer.site-footer{padding:60px 40px 40px; text-align:center; border-top:1px sol
   display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; cursor:pointer;
 }
 .video-frame iframe, .video-frame video{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.video-embed-desktop, .video-embed-mobile{display:block;}
+@media (max-width:900px){ .video-embed-desktop{display:none;} }
+@media (min-width:901px){ .video-embed-mobile{display:none;} }
 .video-frame.portrait{width:100%; max-width:340px; aspect-ratio:9/16; margin:0 auto;}
 .video-frame .play{width:64px; height:64px; border-radius:50%; border:1px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; z-index:1;}
 .video-frame .play::after{content:''; border-style:solid; border-width:9px 0 9px 15px; border-color:transparent transparent transparent #fff; margin-left:4px;}
@@ -887,7 +890,7 @@ var COLLECTIONS = {
     lede: '以拼布敘日，紀錄一整天的行程。拼布、插畫、互動是該系列的三大核心。',
     palette: ['#E7C9A9', '#C58B78', '#B08A4E', '#F3ECDD'],
     lineupPhoto: 'photos/grad-lineup.png',
-    videos: [{ caption: "走秀正式影片 — Graduation Runway", orientation: 'landscape', gdrive: '1qfVeZB9uekYaV_h5-3xP99EC75A3BzGe' }],
+    videos: [{ caption: "走秀正式影片 — Graduation Runway", orientation: 'landscape', gdrive: '1qfVeZB9uekYaV_h5-3xP99EC75A3BzGe', youtube: '4hGnaiDQJwE' }],
     lineup: true,
     lineupPhoto: 'photos/grad-lineup.png',
     albumCaption: '寫真 · 畢業製作',
@@ -1178,16 +1181,21 @@ function renderLineup(looks, lineupPhoto) {
 
 /* ---------------- 影片 Video ---------------- */
 function videoEmbedHtml(v) {
- if (v.youtube) {
-    return '<iframe src="https://www.youtube.com/embed/' + v.youtube + '" title="' + (v.caption||'') + '" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;"></iframe>';
+  if (v.gdrive && v.youtube) {
+    var driveHtml = '<iframe src="https://drive.google.com/file/d/' + v.gdrive + '/preview" title="' + (v.caption || '') + '" frameborder="0" allow="autoplay" allowfullscreen style="width:100%;height:100%;"></iframe>';
+    var ytHtml = '<iframe src="https://www.youtube.com/embed/' + v.youtube + '" title="' + (v.caption || '') + '" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;"></iframe>';
+    return '<span class="video-embed-desktop">' + driveHtml + '</span><span class="video-embed-mobile">' + ytHtml + '</span>';
+  }
+  if (v.youtube) {
+    return '<iframe src="https://www.youtube.com/embed/' + v.youtube + '" title="' + (v.caption || '') + '" frameborder="0" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen style="width:100%;height:100%;"></iframe>';
   }
   if (v.gdrive) {
-    return '<iframe src="https://drive.google.com/file/d/' + v.gdrive + '/preview" title="' + (v.caption||'') + '" frameborder="0" allow="autoplay" allowfullscreen style="width:100%;height:100%;"></iframe>';
+    return '<iframe src="https://drive.google.com/file/d/' + v.gdrive + '/preview" title="' + (v.caption || '') + '" frameborder="0" allow="autoplay" allowfullscreen style="width:100%;height:100%;"></iframe>';
   }
   if (v.src) {
     return '<video src="' + v.src + '" controls playsinline preload="auto" style="width:100%;height:100%;object-fit:cover;"></video>';
   }
-  return '<span class="play"></span><span class="vcap">' + (v.caption||'') + '</span>';
+  return '<span class="play"></span><span class="vcap">' + (v.caption || '') + '</span>';
 }
 function renderVideosStandard(c) {
   if (!c.videos || c.videos.length === 0) return '';
