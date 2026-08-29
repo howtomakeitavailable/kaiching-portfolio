@@ -195,10 +195,11 @@ footer.site-footer{padding:60px 40px 40px; text-align:center; border-top:1px sol
 .video-section{padding-bottom:60px;}
 .video-wrap{display:flex; flex-direction:column; gap:26px;}
 .video-frame{
-  width:100%; aspect-ratio:16/9; background:var(--ink); border:1px solid var(--line);
-  display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden; cursor:pointer;
+  width:100%; height:0; padding-bottom:56.25%; background:var(--ink); border:1px solid var(--line);
+  position:relative; overflow:hidden; cursor:pointer;
 }
-.video-frame.portrait{width:100%; max-width:340px; aspect-ratio:9/16; margin:0 auto;}
+.video-frame iframe, .video-frame video{position:absolute; inset:0; width:100%; height:100%; border:0;}
+.video-frame.portrait{width:100%; max-width:340px; height:0; padding-bottom:177.78%; margin:0 auto;}
 .video-frame .play{width:64px; height:64px; border-radius:50%; border:1px solid rgba(255,255,255,0.5); display:flex; align-items:center; justify-content:center; z-index:1;}
 .video-frame .play::after{content:''; border-style:solid; border-width:9px 0 9px 15px; border-color:transparent transparent transparent #fff; margin-left:4px;}
 .video-frame .vcap{position:absolute; bottom:20px; left:22px; right:22px; color:rgba(255,255,255,0.75); font-size:11px; letter-spacing:0.12em; text-transform:uppercase; z-index:1;}
@@ -911,7 +912,8 @@ var COLLECTIONS = {
 var COLLECTION_KEYS = ['ind', 'brand', 'show', 'grad', 'collab'];
 
 /* 首頁精選：原民服飾/時裝展演/畢業製作各一，個人品牌/產學合作各兩套，共 7 套 */
-var HOME_HIGHLIGHTS = ['ind1', 'brand1', 'brand2', 'lineup:show', 'lineup:grad', 'collab1', 'collab2'];
+var HOME_HIGHLIGHTS = ['ind1', 'brand1', 'brand2', 'show4', 'grad2', 'collab1', 'collab2'];
+var HOME_LINEUP_COLLECTIONS = ['show', 'grad'];
 
 /* ---------------- 平面設計 Graphic Design ---------------- */
 var GRAPHIC_PROJECTS = [
@@ -978,16 +980,6 @@ function chapterNav(currentKey) {
 /* ---------------- 首頁 Home ---------------- */
 function renderHome() {
 var orbitItems = HOME_HIGHLIGHTS.map(function (id) {
-  if (id.indexOf('lineup:') === 0) {
-    var ckey = id.slice(7);
-    var c = COLLECTIONS[ckey];
-    var repLook = LOOKS.filter(function (x) { return x.collection === ckey; })[0];
-    var thumb = c.lineupPhoto ? imgTag(c.lineupPhoto, c.title) : drawLook(repLook);
-    return '<div class="orbit-item">' +
-      '<button class="card" data-lineup="' + ckey + '" aria-label="' + c.title + '">' + thumb + '</button>' +
-      '<span class="num">' + PAGE_LABEL[ckey] + '</span>' +
-      '</div>';
-  }
   var l = LOOKS.filter(function (x) { return x.id === id; })[0];
   return '<div class="orbit-item">' +
     '<button class="card" data-look="' + l.id + '" aria-label="' + l.name + '">' + drawLook(l) + '</button>' +
@@ -1557,9 +1549,13 @@ document.addEventListener('click', function (e) {
 
   var orbitCard = e.target.closest ? e.target.closest('.orbit-item .card') : null;
   if (orbitCard) {
-    var lineupKey = orbitCard.getAttribute('data-lineup');
-    if (lineupKey) { openLineupLightbox(lineupKey); return; }
-    openLightbox('look', orbitCard.getAttribute('data-look'));
+    var lid = orbitCard.getAttribute('data-look');
+    var lookEntry = LOOKS.filter(function (x) { return x.id === lid; })[0];
+    if (lookEntry && HOME_LINEUP_COLLECTIONS.indexOf(lookEntry.collection) > -1) {
+      openLineupLightbox(lookEntry.collection);
+    } else {
+      openLightbox('look', lid);
+    }
     return;
   }
 
