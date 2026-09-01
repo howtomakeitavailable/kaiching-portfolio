@@ -836,8 +836,9 @@ var LOOKS = [
     blurb: '<p>陳家製鞋廠x實踐大學服裝設計，由小組向廠商提案。</p><p>旅行的本質，在於輕裝簡行，但對美感的追求不應受限。使用芭蕾舞鞋的經典輪廓，打造出這款兼具舒適與高度實用性的「旅行專用折疊鞋」。</p>' },
   { id: 'collab3', num: '03', collection: 'collab', sil: 'tunic_culottes', c1: '#2a63af', c2: '#ffffff', acc: '#57c3e9', c3: '#f7eb78', accType: 'belt',
     name: 'Loop&Leap', nameEn: '品牌識別', 
-    ccType: null, modes: [ 'tag', 'bizcard1', 'bizcard2', 'ig', 'sticker1', 'sticker2'],
+    ccType: null, modes: [ 'logo', 'tag', 'bizcard1', 'bizcard2', 'ig', 'sticker1', 'sticker2'],
     modeLabels: {
+    logo: '品牌Logo',
     tag: '品牌吊牌',
     bizcard1: '名片設計',
     bizcard2: '名片實物',
@@ -846,6 +847,7 @@ var LOOKS = [
     sticker2: '週邊商品'
   },
     photos: {
+    logo: 'photos/collab2-logo.png',
     tag: 'photos/collab2-label.png',
     bizcard1: 'photos/collab2-bizcard1.png',
     bizcard2: 'photos/collab2-bizcard2.png',
@@ -950,7 +952,7 @@ var ABOUT = {
     { k: '得獎經歷', v: '實踐大學服裝設計系SS26 GRADUATE FASHION SHOW PRET 佳作' }
   ],
   contacts: [
-    { label: 'Email', href: 'mailto: jg991730@gmail.com' },
+    { label: 'Email: jg991730@gmail.com', href: 'mailto: jg991730@gmail.com' },
     { label: '履歷 Résumé (PDF)', href: 'https://drive.google.com/file/d/1wljvA030jShzP2bgiTy26hmo1bfu3Xu1/view?usp=sharing' }
   ]
 };
@@ -1204,7 +1206,7 @@ function renderVideosStandard(c) {
   }).join('');
   return '' +
     '<section class="video-section"><div class="wrap">' +
-      '<div class="section-title"><span class="eyebrow">Runway Film</span><hr class="stitch"></div>' +
+      '<div class="section-title"><span class="eyebrow">Film</span><hr class="stitch"></div>' +
       '<div class="video-wrap">' + frames + '</div>' +
     '</div></section>';
 }
